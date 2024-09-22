@@ -1,0 +1,14 @@
+*.pth
+*.pt
+*.pkl
+*.pth.tar
+*.pt.tar
+*.pkl.tar
+*.pth.tar.gz
+*.pt.tar.gz
+*.pkl.tar.gz
+
+*.ckpt
+*.pyc
+*.tfevents.*
+__pycache__

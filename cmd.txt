@@ -1,0 +1,8 @@
+torchrun --nproc_per_node=2 --nnodes=1 --node_rank=0 \
+main_mar.py \
+--model mar_base --diffloss_d 6 --diffloss_w 1024 \
+--eval_bsz 1024 --num_images 5000 \
+--num_iter 256 --num_sampling_steps 100 --cfg 2.9 --cfg_schedule linear --temperature 1.0 \
+--output_dir pretrained_models/mar/mar_base \
+--resume pretrained_models/mar/mar_base \
+--data_path /workspace/imagenet-1k --evaluate
