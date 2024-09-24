@@ -7,6 +7,8 @@ import math
 import torch
 import torch.nn as nn
 from torch.utils.checkpoint import checkpoint
+from models.hydra.hydra.modules.hydra import Hydra
+from mamba_ssm import Mamba2
 
 from timm.models.vision_transformer import Block
 
@@ -73,8 +75,9 @@ class MAR(nn.Module):
         self.encoder_pos_embed_learned = nn.Parameter(torch.zeros(1, self.seq_len + self.buffer_size, encoder_embed_dim))
 
         self.encoder_blocks = nn.ModuleList([
-            Block(encoder_embed_dim, encoder_num_heads, mlp_ratio, qkv_bias=True, norm_layer=norm_layer,
-                  proj_drop=proj_dropout, attn_drop=attn_dropout) for _ in range(encoder_depth)])
+            # Block(encoder_embed_dim, encoder_num_heads, mlp_ratio, qkv_bias=True, norm_layer=norm_layer,
+            #       proj_drop=proj_dropout, attn_drop=attn_dropout) for _ in range(encoder_depth)])
+            Mamba2(d_model=encoder_embed_dim, d_state=64, d_conv=4, expand=2, use_mem_eff_path=True) for _ in range(encoder_depth * 2)])
         self.encoder_norm = norm_layer(encoder_embed_dim)
 
         # --------------------------------------------------------------------------
@@ -84,9 +87,9 @@ class MAR(nn.Module):
         self.decoder_pos_embed_learned = nn.Parameter(torch.zeros(1, self.seq_len + self.buffer_size, decoder_embed_dim))
 
         self.decoder_blocks = nn.ModuleList([
-            Block(decoder_embed_dim, decoder_num_heads, mlp_ratio, qkv_bias=True, norm_layer=norm_layer,
-                  proj_drop=proj_dropout, attn_drop=attn_dropout) for _ in range(decoder_depth)])
-
+            # Block(decoder_embed_dim, decoder_num_heads, mlp_ratio, qkv_bias=True, norm_layer=norm_layer,
+            #       proj_drop=proj_dropout, attn_drop=attn_dropout) for _ in range(decoder_depth)])
+            Mamba2(d_model=decoder_embed_dim, d_state=64, d_conv=4, expand=2, use_mem_eff_path=True) for _ in range(decoder_depth * 2)])
         self.decoder_norm = norm_layer(decoder_embed_dim)
         self.diffusion_pos_embed_learned = nn.Parameter(torch.zeros(1, self.seq_len, decoder_embed_dim))
 

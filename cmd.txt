@@ -6,3 +6,35 @@ main_mar.py \
 --output_dir pretrained_models/mar/mar_base \
 --resume pretrained_models/mar/mar_base \
 --data_path /workspace/imagenet-1k --evaluate
+
+torchrun --nproc_per_node=8 --nnodes=1 --node_rank=0 \
+main_mar.py \
+--img_size 256 --vae_path pretrained_models/vae/kl16.ckpt --vae_embed_dim 16 --vae_stride 16 --patch_size 1 \
+--model mar_base --diffloss_d 3 --diffloss_w 1024 \
+--epochs 400 --warmup_epochs 100 --batch_size 128 --blr 2.5e-5 --diffusion_batch_mul 4 \
+--output_dir /workspace/mamba2 --resume /workspace/mamba2 \
+--data_path /workspace/imagenet-1k --use_cached --cached_path /workspace/cache --online_eval --num_images 10000 --eval_bsz 256 --cfg 2.9 --cfg_schedule linear --temperature 1.0 --eval_freq=5
+
+torchrun --nproc_per_node=8 --nnodes=1 --node_rank=0 \
+main_mar.py \
+--img_size 256 --vae_path pretrained_models/vae/kl16.ckpt --vae_embed_dim 16 --vae_stride 16 --patch_size 1 \
+--model mar_base --diffloss_d 3 --diffloss_w 1024 \
+--epochs 400 --warmup_epochs 100 --batch_size 128 --blr 2.2e-5 --diffusion_batch_mul 4 \
+--output_dir /workspace/mamba2 --resume /workspace/mamba2 \
+--data_path /workspace/imagenet-1k --use_cached --cached_path /workspace/cache --online_eval --num_iter 256 --num_sampling_steps 100  --num_images 5000 --eval_bsz 256 --cfg 2.9 --cfg_schedule linear --temperature 1.0 --eval_freq=20
+
+screen -L -Logfile screen.out torchrun --nproc_per_node=8 --nnodes=1 --node_rank=0 \
+main_mar.py \
+--img_size 256 --vae_path pretrained_models/vae/kl16.ckpt --vae_embed_dim 16 --vae_stride 16 --patch_size 1 \
+--model mar_base --diffloss_d 3 --diffloss_w 1024 \
+--epochs 400 --warmup_epochs 100 --batch_size 128 --blr 2.2e-5 --diffusion_batch_mul 4 \
+--output_dir /workspace/mamba2 --resume /workspace/mamba2 \
+--data_path /workspace/imagenet-1k --use_cached --cached_path /workspace/cache --online_eval --num_iter 256 --num_sampling_steps 100  --num_images 5000 --eval_bsz 256 --cfg 2.9 --cfg_schedule linear --temperature 1.0 --eval_freq=20
+
+
+
+torchrun --nproc_per_node=8 --nnodes=1 --node_rank=0 \
+main_cache.py \
+--img_size 256 --vae_path pretrained_models/vae/kl16.ckpt --vae_embed_dim 16 \
+--batch_size 256 \
+--data_path /workspace/imagenet-1k --cached_path /workspace/cache

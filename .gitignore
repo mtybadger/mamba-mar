@@ -12,3 +12,7 @@
 *.pyc
 *.tfevents.*
 __pycache__
+
+wandb/
+src/
+*.out

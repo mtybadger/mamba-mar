@@ -5,6 +5,7 @@ import os
 import time
 from pathlib import Path
 
+import wandb
 import torch
 import torch.backends.cudnn as cudnn
 from torch.utils.tensorboard import SummaryWriter
@@ -264,6 +265,24 @@ def main(args):
 
     # training
     print(f"Start training for {args.epochs} epochs")
+    if misc.is_main_process():
+        run = wandb.init(
+        # Set the project where this run will be logged
+        project="mamba-mar",
+        # Track hyperparameters and run metadata
+        config={
+            "epochs": args.epochs,
+            "batch_size": args.batch_size,
+            "learning_rate": args.lr,
+            "weight_decay": args.weight_decay,
+            "num_iter": args.num_iter,
+            "num_images": args.num_images,
+            "cfg": args.cfg,
+            "cfg_schedule": args.cfg_schedule,
+            "label_drop_prob": args.label_drop_prob,
+        })
+
+
     start_time = time.time()
     for epoch in range(args.start_epoch, args.epochs):
         if args.distributed:

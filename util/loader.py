@@ -47,7 +47,7 @@ class CachedFolder(datasets.DatasetFolder):
         """
         path, target = self.samples[index]
 
-        data = np.load(path)
+        data = np.load(path, allow_pickle=True)
         if torch.rand(1) < 0.5:  # randomly hflip
             moments = data['moments']
         else:

@@ -11,6 +11,7 @@ import torch_fidelity
 import shutil
 import cv2
 import numpy as np
+import wandb
 import os
 import copy
 import time
@@ -69,6 +70,9 @@ def train_one_epoch(model, vae,
             loss = model(x, labels)
 
         loss_value = loss.item()
+
+        if misc.is_main_process():
+            wandb.log({"loss": loss_value, "lr": optimizer.param_groups[0]["lr"], "epoch": epoch})
 
         if not math.isfinite(loss_value):
             print("Loss is {}, stopping training".format(loss_value))
@@ -206,6 +210,8 @@ def evaluate(model_without_ddp, vae, ema_params, args, epoch, batch_size=16, log
         )
         fid = metrics_dict['frechet_inception_distance']
         inception_score = metrics_dict['inception_score_mean']
+        if misc.is_main_process():
+            wandb.log({"fid": fid, "inception_score": inception_score, "epoch": epoch})
         postfix = ""
         if use_ema:
            postfix = postfix + "_ema"
@@ -230,6 +236,8 @@ def cache_latents(vae,
     print_freq = 20
 
     for data_iter_step, (samples, _, paths) in enumerate(metric_logger.log_every(data_loader, print_freq, header)):
+        if data_iter_step < 600:
+            continue
 
         samples = samples.to(device, non_blocking=True)
 

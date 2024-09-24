@@ -18,7 +18,7 @@ conda env create -f environment.yaml
 conda activate mar
 
 # Install system dependencies
-sudo apt update && sudo apt install -y libsm6 libxext6 libxrender-dev
+apt update && apt install -y libsm6 libxext6 libxrender-dev
 
 # Navigate to Bi-Mamba2 directory and install
 cd /workspace/mar/models/Bi-Mamba2
@@ -33,8 +33,8 @@ pip install einops mamba_ssm causal_conv1d wandb
 
 wandb login --relogin
 
-curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
-sudo apt-get install git-lfs
+curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash
+apt-get install git-lfs
 git lfs install
 
 
@@ -43,3 +43,4 @@ git lfs install
 
 
 
+vvhf_nCNsjQeYLJDcQHLSZmbnUPfqmhDIKWzyGz

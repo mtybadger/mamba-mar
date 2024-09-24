@@ -12,6 +12,11 @@ dependencies:
   - numpy=1.22
   - pip:
     - opencv-python==4.1.2.30
+    - wandb
+    - einops
+    - mamba_ssm
+    - causal_conv1d
+    - tqdm
     - timm==0.9.12
     - tensorboard==2.10.0
     - scipy==1.9.1
